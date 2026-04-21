@@ -37,8 +37,7 @@ def train_model_dict(p, prev_best_model = None, prev_itr = 1):
 
     else:
         print('Running on CPU!!!')
-        exit()
-        #device = torch.device("cpu")
+        device = torch.device("cpu")
             
     torch.manual_seed(1)
     torch.cuda.manual_seed_all(1)

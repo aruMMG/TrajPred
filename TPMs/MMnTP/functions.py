@@ -5,7 +5,7 @@ from time import time
 
 from . import utils
 
-def MMnTP_training(p, data_tuple, label_tuple, model, loss_func_tuple, device):
+def MMnTP_training(p, data_tuple, label_tuple, model, dataset, loss_func_tuple, device):
     '''
     start_all = torch.cuda.Event(enable_timing=True)
     end_all = torch.cuda.Event(enable_timing=True)
@@ -21,7 +21,7 @@ def MMnTP_training(p, data_tuple, label_tuple, model, loss_func_tuple, device):
     '''
     traj_loss_func = loss_func_tuple[0]
     man_loss_func = loss_func_tuple[1]
-    man_data = label_tuple[0]
+    man_data = label_tuple
     man_data_onehot = F.one_hot(man_data, num_classes= 3)
     man_input = man_data_onehot[:,(p.IN_SEQ_LEN-1):(p.IN_SEQ_LEN-1+p.TGT_SEQ_LEN)]
     man_gt = man_data[:, p.IN_SEQ_LEN:(p.IN_SEQ_LEN+p.TGT_SEQ_LEN)]
@@ -136,13 +136,13 @@ def MMnTP_deploy(p, data_tuple, plot_info, dataset, model, device):
 
 
 
-def MMnTP_evaluation(p, data_tuple, plot_info, dataset, label_tuple, model, loss_func_tuple, device, eval_type):
+def MMnTP_evaluation(p, data_tuple, label_tuple, plot_info, dataset, model, loss_func_tuple, device, eval_type):
     (tv_id, frames, data_file) = plot_info
     
     traj_loss_func = loss_func_tuple[0]
     man_loss_func = loss_func_tuple[1]
 
-    man_data = label_tuple[0]
+    man_data = label_tuple
     man_gt = man_data[:, p.IN_SEQ_LEN:(p.IN_SEQ_LEN+p.TGT_SEQ_LEN)]
     
     w_ind = utils.divide_prediction_window(p.TGT_SEQ_LEN, model.man_per_mode)

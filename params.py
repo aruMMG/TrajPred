@@ -10,6 +10,12 @@ import pickle
 import kpis
 import TPMs
 import math
+
+
+def eval_if_string(value):
+    return eval(value) if isinstance(value, str) else value
+
+
 class ParametersHandler:
     def __init__(self, model, dataset, parameters_dir, seperate_deploy_dataset = None, seperate_test_dataset = None, experiments_dir = 'experiments/', evaluation_dir = 'evaluations/', models_dir = 'models/', datasets_dir = 'datasets/', constants_file = 'constants.yaml', hyperparams_file = 'hyperparams.yaml'):
         self.parameter_tuning_experiment = False 
@@ -110,6 +116,7 @@ class ParametersHandler:
         self.FPS = self.hyperparams['problem']['FPS']
         self.MIN_IN_SEQ_LEN = self.hyperparams['problem']['MIN_IN_SEQ_LEN']
         self.MAX_IN_SEQ_LEN = self.hyperparams['problem']['MAX_IN_SEQ_LEN']
+        self.IN_SEQ_LEN = self.MAX_IN_SEQ_LEN
         self.TGT_SEQ_LEN = self.hyperparams['problem']['TGT_SEQ_LEN'] # out_Seq_len
         self.SKIP_SEQ_LEN = self.hyperparams['problem']['SKIP_SEQ_LEN'] # end_of_seq_skip_len
         
@@ -117,12 +124,12 @@ class ParametersHandler:
         # Training  Hyperparameters
         self.CUDA = self.hyperparams['experiment']['cuda']
         self.BATCH_SIZE = self.hyperparams['training']['batch_size'] 
-        self.LR = eval(self.hyperparams['training']['lr'])
+        self.LR = eval_if_string(self.hyperparams['training']['lr'])
         self.LR_WU = self.hyperparams['training']['lr_wu']
-        self.LR_WU_BATCHES = int(eval(self.hyperparams['training']['lr_wu_batches']))
+        self.LR_WU_BATCHES = int(eval_if_string(self.hyperparams['training']['lr_wu_batches']))
         self.TRAJ2CLASS_LOSS_RATIO = self.hyperparams['training']['traj2class_loss_ratio']
         self.LR_DECAY = self.hyperparams['training']['lr_decay']
-        self.NUM_ITRS = int(eval(self.hyperparams['training']['num_itrs']))
+        self.NUM_ITRS = int(eval_if_string(self.hyperparams['training']['num_itrs']))
         self.TR_JUMP_STEP = self.hyperparams['training']['tr_jump_step']
         self.SKIP_VAL_ITRS = self.hyperparams['training']['skip_validation_itrs']
         self.VAL_FREQ = self.hyperparams['training']['val_freq']

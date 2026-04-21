@@ -1,0 +1,15 @@
+.env
+.codex
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.vscode
+data/
+runs/
+runs(debugging)/
+results/
+evaluations/
+experiments/
+weights/
+models/

@@ -99,13 +99,14 @@ def train_top_func(p, model_train_func, model_eval_func, model_kpi_func,
     best_itr = 0
     p.LR_WU_CURRENT_BATCH = 0
     training_start = time()
+    tr_iter = iter(tr_loader)
     
     
     for itr in range(prev_itr, p.NUM_ITRS):
         start = time()
-        tr_print_dict, lr = train_step(p, model_train_func, model, 
+        tr_print_dict, lr, tr_iter = train_step(p, model_train_func, model, 
                                     loss_func_tuple, optimizer, 
-                                    tr_dataset, tr_loader,itr, device)
+                                    tr_dataset, tr_loader, tr_iter, itr, device)
         
         if itr%100==0:
             print('ITR:{}/{}'.format(itr, p.NUM_ITRS))
@@ -192,15 +193,15 @@ def train_top_func(p, model_train_func, model_eval_func, model_kpi_func,
 
 def train_step(p, model_train_func, model, loss_func_tuple, 
                 optimizer, train_dataset, train_loader, 
-                itr, device):
+                train_iter, itr, device):
     
     model.train()
     # Training loop over batches of data on train dataset
     try:
-        (data_tuple, man,_) = next(train_loader)
-    except:
-        data_itr = iter(train_loader)
-        (data_tuple, man,_) = next(data_itr)
+        (data_tuple, man,_) = next(train_iter)
+    except StopIteration:
+        train_iter = iter(train_loader)
+        (data_tuple, man,_) = next(train_iter)
     
     
     data_tuple = [data.to(device) for data in data_tuple]
@@ -236,7 +237,7 @@ def train_step(p, model_train_func, model, loss_func_tuple,
         
     optimizer.step()
     
-    return batch_print_info_dict, lr
+    return batch_print_info_dict, lr, train_iter
 
 def deploy_model(p, model, model_deploy_func, de_loader, de_dataset, device, vis_data_path = None, figure_name=None):
     total = len(de_loader.dataset)
